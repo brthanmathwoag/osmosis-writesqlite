@@ -19,9 +19,11 @@ public class WsTaskManagerFactory extends TaskManagerFactory {
         boolean shouldRecreateSchema =
             getBooleanArgument(taskConfig, "recreateSchema", false) || !new File(databasePath).exists();
 
+        long batchSize = getIntegerArgument(taskConfig, "batchSize", -1);
+
         return new SinkManager(
             taskConfig.getId(),
-            new WsTask(databasePath, shouldRecreateSchema),
+            new WsTask(databasePath, shouldRecreateSchema, batchSize),
             taskConfig.getPipeArgs());
     }
 }

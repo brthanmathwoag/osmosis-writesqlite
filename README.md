@@ -4,6 +4,10 @@ This is an [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) plugin for stor
 
 ## Installation
 
+You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: 556e780cfaf3e416b815450fdb0af81ecf109283). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
+
+To build it yourself, run:
+
 ```
 git clone https://github.com/brthanmathwoag/osmosis-writesqlite.git
 cd osmosis-writesqlite

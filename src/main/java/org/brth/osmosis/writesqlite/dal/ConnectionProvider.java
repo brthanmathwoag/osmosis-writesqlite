@@ -11,9 +11,11 @@ import java.sql.Statement;
 public class ConnectionProvider implements AutoCloseable {
     private String databasePath;
     private Connection connection;
+    private boolean useTransactions;
 
-    public ConnectionProvider(String databasePath) {
+    public ConnectionProvider(String databasePath, boolean useTransactions) {
         this.databasePath = databasePath;
+        this.useTransactions = useTransactions;
     }
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
@@ -29,17 +31,35 @@ public class ConnectionProvider implements AutoCloseable {
         config.enableLoadExtension(true);
         connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath, config.toProperties());
 
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("select load_extension('mod_spatialite')");
-            statement.execute("begin");
-        }
+        executeStatement("select load_extension('mod_spatialite')", false);
+        beginTransactionIfNeeded();
     }
 
     public void close() throws SQLException, ClassNotFoundException {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("commit");
-        }
+        commitTransactionIfNeeded();
         ResourceUtils.closeSilently(connection);
         connection = null;
+    }
+
+    public void commitAndBeginTransaction() throws SQLException {
+        commitTransactionIfNeeded();
+        beginTransactionIfNeeded();
+    }
+
+    private void beginTransactionIfNeeded() throws SQLException {
+        executeStatement("begin", true);
+    }
+
+    private void commitTransactionIfNeeded() throws SQLException {
+        executeStatement("commit", true);
+    }
+
+    private void executeStatement(String sql, boolean onlyInTransaction) throws SQLException {
+        if(onlyInTransaction && !useTransactions) {
+            return;
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 }

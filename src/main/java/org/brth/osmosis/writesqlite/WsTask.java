@@ -15,14 +15,17 @@ import java.util.Map;
 public class WsTask implements Sink {
     private String databasePath;
     private boolean shouldRecreateSchema;
+    private long batchSize;
+    private long currentIndex;
 
     private SchemaHelper schemaHelper = null;
     private ConnectionProvider connectionFactory = null;
     private RepositoryFactory repositoryFactory = null;
 
-    public WsTask(String databasePath, boolean shouldRecreateSchema) {
+    public WsTask(String databasePath, boolean shouldRecreateSchema, long batchSize) {
         this.databasePath = databasePath;
         this.shouldRecreateSchema = shouldRecreateSchema;
+        this.batchSize = batchSize;
     }
 
     @Override
@@ -31,6 +34,10 @@ public class WsTask implements Sink {
             Entity entity = entityContainer.getEntity();
             EntityRepository repository = repositoryFactory.getRepository(entity.getType());
             repository.save(entity);
+            if(batchSize > 0 && ++currentIndex == batchSize) {
+                currentIndex = 0;
+                connectionFactory.commitAndBeginTransaction();
+            }
         } catch (SQLException exception) {
             throw new Error(exception);
         }
@@ -43,7 +50,7 @@ public class WsTask implements Sink {
             if(shouldRecreateSchema) {
                 schemaHelper.recreateSchema();
             }
-            connectionFactory = new ConnectionProvider(databasePath);
+            connectionFactory = new ConnectionProvider(databasePath, batchSize != 0);
             repositoryFactory = new RepositoryFactory(connectionFactory.getConnection());
         } catch (Exception exception) {
             throw new Error(exception);
