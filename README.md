@@ -4,7 +4,7 @@ This is an [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) plugin for stor
 
 ## Installation
 
-You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: 23f7d343cce51584395cff4b24e763a524a7b529). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
+You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: 71bf6495aff11d3b7e7f07cfcf20d75aef593bcb). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
 
 To build it yourself, run:
 
