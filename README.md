@@ -4,7 +4,7 @@ This is an [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) plugin for stor
 
 ## Installation
 
-You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: 556e780cfaf3e416b815450fdb0af81ecf109283). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
+You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: 23f7d343cce51584395cff4b24e763a524a7b529). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
 
 To build it yourself, run:
 
@@ -20,12 +20,15 @@ cp target/osmosis-writesqlite.jar ~/.openstreetmap/osmosis/plugins/
 
 You can reference the plugin in your workflow with the `write-sqlite` alias.
 
-You can pass `recreateSchema=true` parameter if you want to truncate an existing database.
-
 ```
 osmosis --read-pbf germany-latest.osm.pbf \
     --write-sqlite output.db recreateSchema=true
 ```
+
+| Option         | Description                                                                                                                                | Valid values         | Default value |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | ------------- |
+| recreateSchema | Whether you want to truncate an existing database.                                                                                         | yes, no, true, false | false         |
+| batchSize      | Number of rows inserted in a single transaction. Set to -1 to commit after all rows are inserted. Set to 0 to not use transactions at all. | -1, 0, 1, ...        | 0             |
 
 ## Schema
 
