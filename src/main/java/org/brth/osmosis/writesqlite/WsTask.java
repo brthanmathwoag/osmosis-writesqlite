@@ -46,12 +46,15 @@ public class WsTask implements Sink {
     @Override
     public void initialize(Map<String, Object> metaData) {
         try {
-            schemaHelper = new SchemaHelper(databasePath);
+            connectionFactory = new ConnectionProvider(databasePath, batchSize != 0);
+            Connection connection = connectionFactory.getConnection();
+            schemaHelper = new SchemaHelper(connection);
+
             if(shouldRecreateSchema) {
                 schemaHelper.recreateSchema();
             }
-            connectionFactory = new ConnectionProvider(databasePath, batchSize != 0);
-            repositoryFactory = new RepositoryFactory(connectionFactory.getConnection());
+
+            repositoryFactory = new RepositoryFactory(connection);
         } catch (Exception exception) {
             throw new Error(exception);
         }
@@ -62,11 +65,10 @@ public class WsTask implements Sink {
     @Override
     public void complete() {
         try {
-            closeConnection();
             if (shouldRecreateSchema) {
                 schemaHelper.createIndices();
             }
-        } catch (Exception exception) {
+        } catch (SQLException exception) {
             throw new Error(exception);
         }
     }
@@ -80,6 +82,6 @@ public class WsTask implements Sink {
 
     @Override
     public void release() {
-
+        closeConnection();
     }
 }

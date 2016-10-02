@@ -105,7 +105,5 @@ CREATE TABLE relation_tags (
 -- Configure the schema version.
 INSERT INTO schema_info (version) VALUES (5);
 
-
+SELECT InitSpatialMetaData();
 SELECT AddGeometryColumn('nodes', 'geom', 4326, 'POINT', 'XY');
-
-.exit
