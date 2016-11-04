@@ -2,6 +2,12 @@
 
 This is an [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) plugin for storing [OpenStreetMap](https://wiki.openstreetmap.org/wiki/Main_Page) data in an [Sqlite](https://www.sqlite.org/) database.
 
+Make note that if you simply want to load an xml or pbf dump without any filtering/transformation it would probably be faster and less resource-heavy if you used [spatialite_osm_raw](https://www.gaia-gis.it/fossil/spatialite-tools/wiki?name=spatialite_osm_raw) or [spatialite_osm_map](https://www.gaia-gis.it/fossil/spatialite-tools/wiki?name=spatialite_osm_map) from the `spatialite-tools` package instead.
+
+## Prerequisites
+
+The plugin requires spatialite installed as a dynamically-loaded plugin which may be packaged separately from a statically-linked cli executable. Look for `mod_spatialite.so` file in your distro's package documentation. On Ubuntu you will need `libsqlite3-mod-spatialite`. On Arch it is `libspatialite`.
+
 ## Installation
 
 You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: d804753fcc511a2c02094aeccb23c032008482e5). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
