@@ -46,6 +46,26 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${user.home}/.openstreetmap/osmosis/plugins" />
+                                <copy todir="${user.home}/.openstreetmap/osmosis/plugins"
+                                      file="target/${project.name}.jar" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

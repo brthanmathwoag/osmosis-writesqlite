@@ -17,9 +17,7 @@ To build it yourself, run:
 ```
 git clone https://github.com/brthanmathwoag/osmosis-writesqlite.git
 cd osmosis-writesqlite
-mvn package
-mkdir -p ~/.openstreetmap/osmosis/plugins/
-cp target/osmosis-writesqlite.jar ~/.openstreetmap/osmosis/plugins/
+mvn install
 ```
 
 ## Usage
