@@ -32,7 +32,7 @@ osmosis --read-pbf germany-latest.osm.pbf \
 | Option         | Description                                                                                                                                | Valid values         | Default value |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | ------------- |
 | recreateSchema | Whether you want to truncate an existing database.                                                                                         | yes, no, true, false | false         |
-| batchSize      | Number of rows inserted in a single transaction. Set to -1 to commit after all rows are inserted. Set to 0 to not use transactions at all. | -1, 0, 1, ...        | 0             |
+| batchSize      | Number of rows inserted in a single transaction. Set to -1 to commit after all rows are inserted. Set to 0 to not use transactions at all. | -1, 0, 1, ...        | -1             |
 
 ## Schema
 
