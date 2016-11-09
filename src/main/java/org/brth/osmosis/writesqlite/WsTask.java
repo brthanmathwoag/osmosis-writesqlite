@@ -36,7 +36,7 @@ public class WsTask implements Sink {
             repository.save(entity);
             if(batchSize > 0 && ++currentIndex == batchSize) {
                 currentIndex = 0;
-                connectionFactory.commitAndBeginTransaction();
+                connectionFactory.commitBatch();
             }
         } catch (SQLException exception) {
             throw new Error(exception);

@@ -31,33 +31,25 @@ public class ConnectionProvider implements AutoCloseable {
         config.enableLoadExtension(true);
         connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath, config.toProperties());
 
-        executeStatement("select load_extension('mod_spatialite')", false);
-        beginTransactionIfNeeded();
+        executeStatement("select load_extension('mod_spatialite')");
+        if (useTransactions) {
+            connection.setAutoCommit(false);
+        }
     }
 
     public void close() throws SQLException, ClassNotFoundException {
-        commitTransactionIfNeeded();
+        commitBatch();
         ResourceUtils.closeSilently(connection);
         connection = null;
     }
 
-    public void commitAndBeginTransaction() throws SQLException {
-        commitTransactionIfNeeded();
-        beginTransactionIfNeeded();
-    }
-
-    private void beginTransactionIfNeeded() throws SQLException {
-        executeStatement("begin", true);
-    }
-
-    private void commitTransactionIfNeeded() throws SQLException {
-        executeStatement("commit", true);
-    }
-
-    private void executeStatement(String sql, boolean onlyInTransaction) throws SQLException {
-        if(onlyInTransaction && !useTransactions) {
-            return;
+    public void commitBatch() throws SQLException {
+        if (useTransactions) {
+            connection.commit();
         }
+    }
+
+    private void executeStatement(String sql) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
