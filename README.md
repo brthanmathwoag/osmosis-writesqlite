@@ -29,10 +29,13 @@ osmosis --read-pbf germany-latest.osm.pbf \
     --write-sqlite output.db recreateSchema=true
 ```
 
-| Option         | Description                                                                                                                                | Valid values         | Default value |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | ------------- |
-| recreateSchema | Whether you want to truncate an existing database.                                                                                         | yes, no, true, false | false         |
-| batchSize      | Number of rows inserted in a single transaction. Set to -1 to commit after all rows are inserted. Set to 0 to not use transactions at all. | -1, 0, 1, ...        | -1             |
+| Option          | Description                                                                                                                                | Valid values                           | Default value |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- | ------------- |
+| recreateSchema  | Whether you want to truncate an existing database.                                                                                         | yes, no, true, false                   | false         |
+| batchSize       | Number of rows inserted in a single transaction. Set to -1 to commit after all rows are inserted. Set to 0 to not use transactions at all. | -1, 0, 1, ...                          | -1            |
+| journalMode     | [SQLite journal mode](https://sqlite.org/pragma.html#pragma_journal_mode)                                                                  | OFF, DELETE, MEMORY, PERSIST, TRUNCATE | DELETE        |
+| synchronousMode | [SQLite synchronous mode](https://sqlite.org/pragma.html#pragma_synchronous)                                                               | OFF, NORMAL, FULL                      | FULL          |
+| cacheSize       | [SQLite cache size](https://sqlite.org/pragma.html#pragma_cache_size) (in pages). Set 0  to use SQLite default.                            | 0, 1, ...                              | 0             |
 
 ## Schema
 

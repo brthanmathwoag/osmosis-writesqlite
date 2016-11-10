@@ -9,13 +9,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConnectionProvider implements AutoCloseable {
-    private String databasePath;
+    private final String databasePath;
+    private final boolean useTransactions;
+    private final SQLiteConfig.JournalMode journalMode;
+    private final SQLiteConfig.SynchronousMode synchronousMode;
+    private final int cacheSize;
     private Connection connection;
-    private boolean useTransactions;
 
-    public ConnectionProvider(String databasePath, boolean useTransactions) {
+    public ConnectionProvider(
+            String databasePath,
+            boolean useTransactions,
+            SQLiteConfig.JournalMode journalMode,
+            SQLiteConfig.SynchronousMode synchronousMode,
+            int cacheSize) {
+
         this.databasePath = databasePath;
         this.useTransactions = useTransactions;
+        this.journalMode = journalMode;
+        this.cacheSize = cacheSize;
+        this.synchronousMode = synchronousMode;
     }
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
@@ -27,8 +39,15 @@ public class ConnectionProvider implements AutoCloseable {
 
     private void openConnection() throws SQLException, ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
+
         SQLiteConfig config = new SQLiteConfig();
         config.enableLoadExtension(true);
+        config.setJournalMode(journalMode);
+        config.setSynchronous(synchronousMode);
+        if (cacheSize > 0) {
+            config.setCacheSize(cacheSize);
+        }
+
         connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath, config.toProperties());
 
         executeStatement("select load_extension('mod_spatialite')");

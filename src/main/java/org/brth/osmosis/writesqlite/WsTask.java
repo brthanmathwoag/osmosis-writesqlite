@@ -7,25 +7,38 @@ import org.brth.osmosis.writesqlite.dal.SchemaHelper;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.*;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
+import org.sqlite.SQLiteConfig;
 
-import java.io.File;
 import java.sql.*;
 import java.util.Map;
 
 public class WsTask implements Sink {
-    private String databasePath;
-    private boolean shouldRecreateSchema;
-    private long batchSize;
-    private long currentIndex;
+    private final boolean shouldRecreateSchema;
+    private final long batchSize;
 
+    private ConnectionProvider connectionProvider = null;
     private SchemaHelper schemaHelper = null;
-    private ConnectionProvider connectionFactory = null;
     private RepositoryFactory repositoryFactory = null;
 
-    public WsTask(String databasePath, boolean shouldRecreateSchema, long batchSize) {
-        this.databasePath = databasePath;
+    private long currentIndex;
+
+    public WsTask(
+            String databasePath,
+            boolean shouldRecreateSchema,
+            long batchSize,
+            SQLiteConfig.JournalMode journalMode,
+            SQLiteConfig.SynchronousMode synchronousMode,
+            int cacheSize) {
+
         this.shouldRecreateSchema = shouldRecreateSchema;
         this.batchSize = batchSize;
+
+        connectionProvider = new ConnectionProvider(
+            databasePath,
+            batchSize != 0,
+            journalMode,
+            synchronousMode,
+            cacheSize);
     }
 
     @Override
@@ -36,7 +49,7 @@ public class WsTask implements Sink {
             repository.save(entity);
             if(batchSize > 0 && ++currentIndex == batchSize) {
                 currentIndex = 0;
-                connectionFactory.commitBatch();
+                connectionProvider.commitBatch();
             }
         } catch (SQLException exception) {
             throw new Error(exception);
@@ -46,8 +59,8 @@ public class WsTask implements Sink {
     @Override
     public void initialize(Map<String, Object> metaData) {
         try {
-            connectionFactory = new ConnectionProvider(databasePath, batchSize != 0);
-            Connection connection = connectionFactory.getConnection();
+
+            Connection connection = connectionProvider.getConnection();
             schemaHelper = new SchemaHelper(connection);
 
             if(shouldRecreateSchema) {
@@ -76,8 +89,8 @@ public class WsTask implements Sink {
     private void closeConnection() {
         ResourceUtils.closeSilently(repositoryFactory);
         repositoryFactory = null;
-        ResourceUtils.closeSilently(connectionFactory);
-        connectionFactory = null;
+        ResourceUtils.closeSilently(connectionProvider);
+        connectionProvider = null;
     }
 
     @Override
