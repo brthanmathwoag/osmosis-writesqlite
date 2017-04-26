@@ -12,7 +12,7 @@ The plugin requires spatialite installed as a dynamically-loaded plugin which ma
 
 ## Installation
 
-You can grab the latest version from [here](https://drive.google.com/file/d/0B_sU33gr527ZRXh2dXNQajRLX2c/view?usp=sharing) (SHA1: fadd6585bc02837af479014fcf084d31900afab4). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
+You can grab the latest version from [here](https://tznvy.eu/download/osmosis-writesqlite.jar) (SHA1: fadd6585bc02837af479014fcf084d31900afab4). Put it in ~/.openstreetmap/osmosis/plugins/ and you are ready to go.
 
 To build it yourself, run:
 
